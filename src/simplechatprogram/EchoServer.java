@@ -50,7 +50,10 @@ public class EchoServer extends AbstractServer
     }
   }
     
+    
+    
   public void handleCommandFromClient(String msg, ConnectionToClient client){
+     
       if(msg.startsWith("#Login")){
           String userId = msg.substring(msg.indexOf(" ")+1,msg.length());
           userId=userId.trim();
@@ -58,6 +61,38 @@ public class EchoServer extends AbstractServer
           client.setInfo("userId",userId);
           sendToAllClients(userId+" Just logged in! ");
       }
+      else if(msg.startsWith("#pm")){
+          String target ="";
+          String pmMessage="";
+          String msgWOCommand = msg.substring(msg.indexOf(" ")+1,msg.length());
+          target = msgWOCommand.substring(0, msgWOCommand.indexOf(" ")); // grab the user's id to send the pm
+          pmMessage = msgWOCommand.substring(msgWOCommand.indexOf(" ")+1,msgWOCommand.length());
+          sentToAClient(pmMessage,target,client);
+      }   
+    
+      
+  }
+  
+  public void sentToAClient(Object message, String target, ConnectionToClient client){
+    
+    Thread[] clientThreadList = getClientConnections();
+
+        for (int i=0; i<clientThreadList.length; i++)
+        {
+          ConnectionToClient user = ((ConnectionToClient)clientThreadList[i]);
+          if(user.getInfo("userId").equals(target)){
+            try
+            {
+                String msg = client.getInfo("userId")+" has sent you a pm: "+message;
+                user.sendToClient(msg);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+          }
+          
+        }
+  
   }
     
   /**
