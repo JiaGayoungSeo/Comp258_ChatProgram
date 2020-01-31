@@ -41,8 +41,23 @@ public class EchoServer extends AbstractServer
   public void handleMessageFromClient
     (Object msg, ConnectionToClient client)
   {
-    System.out.println("Message received: " + msg + " from " + client);
-    this.sendToAllClients(msg);
+    String message = msg.toString();
+    if(message.startsWith("#")){
+        handleCommandFromClient(message, client);
+    }else{
+        System.out.println("Message received: " + msg + " from " + client);
+        this.sendToAllClients(msg);
+    }
+  }
+    
+  public void handleCommandFromClient(String msg, ConnectionToClient client){
+      if(msg.startsWith("#Login")){
+          String userId = msg.substring(msg.indexOf(" ")+1,msg.length());
+          userId=userId.trim();
+          System.out.println(">>>"+userId+" Entered!");  
+          client.setInfo("userId",userId);
+          sendToAllClients(userId+" Just logged in! ");
+      }
   }
     
   /**
@@ -86,9 +101,10 @@ public class EchoServer extends AbstractServer
 
    }
    
-  protected void clientException(ConnectionToClient client){
+  protected void clientException(ConnectionToClient client,Throwable exception){
       System.out.println("This is clientException method");
   }
+  
   
   //Class methods ***************************************************
 
