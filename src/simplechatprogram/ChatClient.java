@@ -53,6 +53,32 @@ public class ChatClient extends AbstractClient
     clientUI.display(msg.toString());
   }
 
+    public ChatClient() {
+        super(null, 0);
+    }
+    
+    
+  public void handleCommand(String s){
+     try
+    {
+        if(s.startsWith("#Login")){
+                  sendToServer(s);
+
+        }else if(s.startsWith("#pm")){
+            sendToServer(s);
+        }else if(s.startsWith("#quit")){
+            quit();
+        }
+    }
+    catch(IOException e)
+    {
+      clientUI.display
+        ("Could not send message to server.  Terminating client.");
+      quit();
+    }
+  }
+  
+  
   /**
    * This method handles all data coming from the UI            
    *
@@ -83,6 +109,10 @@ public class ChatClient extends AbstractClient
     }
     catch(IOException e) {}
     System.exit(0);
+  }
+  
+  protected void connectionClosed() {
+      System.out.println("Connection has been closed");
   }
 }
 //End of ChatClient class
