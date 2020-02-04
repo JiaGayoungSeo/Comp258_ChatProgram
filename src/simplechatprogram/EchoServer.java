@@ -68,7 +68,16 @@ public class EchoServer extends AbstractServer
           target = msgWOCommand.substring(0, msgWOCommand.indexOf(" ")); // grab the user's id to send the pm
           pmMessage = msgWOCommand.substring(msgWOCommand.indexOf(" ")+1,msgWOCommand.length());
           sentToAClient(pmMessage,target,client);
-      }   
+      }else if(msg.startsWith("#join")){
+          String room = msg.substring(msg.indexOf(" ")+1,msg.length());
+          String userId = client.getInfo("userId").toString();
+          room=room.trim();
+          System.out.println(">>>"+room+" Joined!");  
+          client.setInfo("room",room);
+          sendToAllClients(userId+" Just joined room: "+ room);
+      }else if(msg.startsWith("#yell")){
+          sentToAllClientsInRoom(msg, client.getInfo("room").toString(), client);
+      }  
     
       
   }
@@ -105,7 +114,7 @@ public class EchoServer extends AbstractServer
           if(user.getInfo("room").equals(room)){
             try
             {
-              
+                user.sendToClient("This message can be seen only in "+room);
                 user.sendToClient(message);
             }
             catch (Exception ex) {
