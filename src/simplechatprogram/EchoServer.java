@@ -54,7 +54,7 @@ public class EchoServer extends AbstractServer
     
   public void handleCommandFromClient(String msg, ConnectionToClient client){
      
-      if(msg.startsWith("#Login")){
+      if(msg.startsWith("#login")){
           String userId = msg.substring(msg.indexOf(" ")+1,msg.length());
           userId=userId.trim();
           System.out.println(">>>"+userId+" Entered!");  
@@ -85,6 +85,28 @@ public class EchoServer extends AbstractServer
             {
                 String msg = client.getInfo("userId")+" has sent you a pm: "+message;
                 user.sendToClient(msg);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+          }
+          
+        }
+  
+  }
+  
+   public void sentToAllClientsInRoom(Object message, String room, ConnectionToClient client){
+    
+    Thread[] clientThreadList = getClientConnections();
+
+        for (int i=0; i<clientThreadList.length; i++)
+        {
+          ConnectionToClient user = ((ConnectionToClient)clientThreadList[i]);
+          if(user.getInfo("room").equals(room)){
+            try
+            {
+              
+                user.sendToClient(message);
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -137,7 +159,7 @@ public class EchoServer extends AbstractServer
    }
    
   protected void clientException(ConnectionToClient client,Throwable exception){
-      System.out.println("This is clientException method");
+      System.out.println("The client "+client.getName()+" has closed connection.");
   }
   
   
