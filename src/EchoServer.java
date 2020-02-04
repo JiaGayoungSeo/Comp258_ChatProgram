@@ -77,9 +77,28 @@ public class EchoServer extends AbstractServer
           sendToAllClients(userId+" Just joined room: "+ room);
       }else if(msg.startsWith("#yell")){
           sentToAllClientsInRoom(msg, client.getInfo("room").toString(), client);
-      }  
-    
-      
+      } else if(msg.startsWith("#ison")){
+          String userId = msg.substring(msg.indexOf(" ")+1,msg.length());
+          userId=userId.trim();
+          onConnection(userId,client);
+      }
+  }
+  public void onConnection(String userId,ConnectionToClient client){
+     
+      Thread[] clientThreadList = getClientConnections();
+       
+       for(int i=0; i<clientThreadList.length;i++){
+          ConnectionToClient user = ((ConnectionToClient)clientThreadList[i]);
+          if(user.getInfo(userId).equals(userId)){
+              String msg = user.getInfo("userId") + "is on in "+user.getInfo("room");
+              try{
+                client.sendToClient(msg);
+              }catch(IOException e){
+                  
+              }
+          }
+       }
+       
   }
   
   public void sentToAClient(Object message, String target, ConnectionToClient client){
@@ -143,15 +162,15 @@ public class EchoServer extends AbstractServer
   protected void serverStopped()
   {
     System.out.println
-      ("Server has stopped listening for connections.");
+      ("Server has stopped listening for connections.This is serverStopped() method in Echo Server class");
   }
   
   protected void serverClosed(){
-      
+      System.out.println("This is serverClosed method in Echo Server class");
   }
   
   protected void listeningException(Throwable exception) {
-      System.out.println("listening Exception");
+      System.out.println("listening Exception class in Echo Server class");
              
   }
   

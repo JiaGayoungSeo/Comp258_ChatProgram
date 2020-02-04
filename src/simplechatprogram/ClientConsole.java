@@ -68,8 +68,12 @@ public class ClientConsole implements ChatIF
         message = fromConsole.readLine();
         if(message.startsWith("#")){
             client.handleCommand(message);
+        }else{
+            client.handleMessageFromClientUI(message);
+
         }
-        client.handleMessageFromClientUI(message);
+            
+        
       }
     } 
     catch (Exception ex) 
