@@ -37,7 +37,6 @@ public class ChatClient extends AbstractClient
   {
     super(host, port); //Call the superclass constructor
     this.clientUI = clientUI;
-    openConnection();
   }
 
   
@@ -61,13 +60,26 @@ public class ChatClient extends AbstractClient
   public void handleCommand(String s){
      try
     {
-        if(s.startsWith("#Login")){
-                  sendToServer(s);
+        if(s.startsWith("#login")){
+                openConnection();
+                sendToServer(s);
 
         }else if(s.startsWith("#pm")){
             sendToServer(s);
         }else if(s.startsWith("#quit")){
             quit();
+        }else if(s.startsWith("#logoff")){
+            closeConnection();
+        }else if(s.startsWith("#sethost")){
+            
+        }else if(s.startsWith("#setpost")){
+            
+        }else if(s.startsWith("#getport")){
+            
+        }else if(s.startsWith("#gethost")){
+            
+        }else{
+            clientUI.display("We couldn't find the command. Try again!");
         }
     }
     catch(IOException e)
