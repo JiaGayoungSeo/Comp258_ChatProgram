@@ -72,17 +72,20 @@ public class EchoServer extends AbstractServer
           String room = msg.substring(msg.indexOf(" ")+1,msg.length());
           String userId = client.getInfo("userId").toString();
           room=room.trim();
-          System.out.println(">>>"+room+" Joined!");  
+          System.out.println(">>>"+client.getInfo("userId")+" joined in "+room);  
           client.setInfo("room",room);
           sendToAllClients(userId+" Just joined room: "+ room);
       }else if(msg.startsWith("#yell")){
           sentToAllClientsInRoom(msg, client.getInfo("room").toString(), client);
       } else if(msg.startsWith("#ison")){
+          
           String userId = msg.substring(msg.indexOf(" ")+1,msg.length());
           userId=userId.trim();
-          onConnection(userId,client);
+          System.out.println(userId);
+          //onConnection(userId,client);
       }
   }
+  /*
   public void onConnection(String userId,ConnectionToClient client){
      
       Thread[] clientThreadList = getClientConnections();
@@ -91,16 +94,12 @@ public class EchoServer extends AbstractServer
           ConnectionToClient user = ((ConnectionToClient)clientThreadList[i]);
           if(user.getInfo(userId).equals(userId)){
               String msg = user.getInfo("userId") + "is on in "+user.getInfo("room");
-              try{
-                client.sendToClient(msg);
-              }catch(IOException e){
-                  
-              }
+              sendToAllClients(msg);
           }
        }
        
   }
-  
+  */
   public void sentToAClient(Object message, String target, ConnectionToClient client){
     
     Thread[] clientThreadList = getClientConnections();
