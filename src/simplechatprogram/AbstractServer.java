@@ -1,3 +1,4 @@
+package simplechatprogram;
 
 
 import java.net.*;

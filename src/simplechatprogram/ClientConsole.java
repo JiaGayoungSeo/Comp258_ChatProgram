@@ -1,6 +1,8 @@
+package simplechatprogram;
 
 
 import java.io.*;
+import simplechatprogram.GUIConsole;
 
 
 /**
@@ -17,6 +19,7 @@ public class ClientConsole implements ChatIF
    * The default port to connect on.
    */
   final public static int DEFAULT_PORT = 5555;
+  
   
   //Instance variables **********************************************
   
@@ -117,6 +120,7 @@ public class ClientConsole implements ChatIF
     }
     ClientConsole chat= new ClientConsole(host, DEFAULT_PORT);
     chat.accept();  //Wait for console data
+    
   }
 }
 //End of ConsoleChat class

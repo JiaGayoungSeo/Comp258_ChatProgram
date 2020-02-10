@@ -1,3 +1,4 @@
+package simplechatprogram;
 
 
 
@@ -64,7 +65,6 @@ public class ChatClient extends AbstractClient
         if(s.startsWith("#login")){
                 openConnection();
                 sendToServer(s);
-
         }else if(s.startsWith("#pm")){
             sendToServer(s);
         }else if(s.startsWith("#quit")){
@@ -96,6 +96,8 @@ public class ChatClient extends AbstractClient
         }else if(s.startsWith("#yell")){
             sendToServer(s);
         }else if(s.startsWith("#ison")){
+            sendToServer(s);
+        }else if(s.startsWith("#intercom")){
             sendToServer(s);
         }
         else{

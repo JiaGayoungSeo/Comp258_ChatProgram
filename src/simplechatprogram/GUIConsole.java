@@ -16,10 +16,13 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
+import javax.swing.ComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
@@ -31,6 +34,7 @@ import javax.swing.JTextField;
  */
 public class GUIConsole extends JFrame implements ChatIF{
     private ChatClient chatClient;
+    //private ArrayList<String> roomList;
     
     private JButton closeB = new JButton("Close");
     private JButton openB = new JButton("Open");
@@ -76,6 +80,9 @@ public class GUIConsole extends JFrame implements ChatIF{
                 
 		Panel bottom = new Panel();
                 Panel commandPanel = new Panel();
+                
+                JComboBox joinComboBox = new JComboBox();
+                
 		add( "Center", messageList );
 		add( "South" , bottom);
                 add("East" , commandPanel);
@@ -96,7 +103,8 @@ public class GUIConsole extends JFrame implements ChatIF{
                 bottom.add(quitB);
                 
                 commandPanel.add(joinB);
-                commandPanel.add(joinTxF);
+                commandPanel.add(joinComboBox);
+                //commandPanel.add(joinTxF);
                 commandPanel.add(pmB);
                 commandPanel.add(pmTxF);
                 commandPanel.add(yellB);
@@ -116,7 +124,8 @@ public class GUIConsole extends JFrame implements ChatIF{
                         try{
                             chatClient.openConnection();
                             display("This is connected at "+chatClient.getHost());
-                        }catch(IOException ioe){
+                            joinComboBox.addItem("common");
+                        }catch(IOException ioe){;
                             display("Server is not open. Waiting for connection...\n");
                         }
                     }
@@ -124,15 +133,11 @@ public class GUIConsole extends JFrame implements ChatIF{
                 sendB.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e)
                     {
-                    if(messageTxF.getText().startsWith("#")){
-                        //display(messageTxF.getText()+": \n");
+                    
                         send(messageTxF.getText());
+                        //display(messageTxF.getText()+"\n" );
                         messageTxF.setText("");
-                    }else{
-                        send(messageTxF.getText());
-                        display(messageTxF.getText()+"\n" );
-                        messageTxF.setText("");
-                    }
+                    
                      }
 
                 });
@@ -163,6 +168,7 @@ public class GUIConsole extends JFrame implements ChatIF{
                        String string = joinTxF.getText();
                        send("#join "+string);
                        joinTxF.setText("");
+                       joinComboBox.addItem(string);
                     }
                 });
                 
@@ -215,6 +221,8 @@ public class GUIConsole extends JFrame implements ChatIF{
                 }
 
     }
+    
+    
     public void send(String message){
         try{
             chatClient.sendToServer(message);        
@@ -253,6 +261,8 @@ public class GUIConsole extends JFrame implements ChatIF{
         ("Unexpected error while reading from console!");
     }
   }
+    
+   
     
     public static void main(String[] args) 
   {

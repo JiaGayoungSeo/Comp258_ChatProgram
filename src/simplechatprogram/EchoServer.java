@@ -1,3 +1,4 @@
+package simplechatprogram;
 
 
 import java.io.*;
@@ -46,7 +47,7 @@ public class EchoServer extends AbstractServer
         handleCommandFromClient(message, client);
     }else{
         System.out.println("Message received: " + msg + " from " + client);
-        this.sendToAllClients(msg);
+        this.sentToAllClientsInRoom(msg,client.getInfo("room").toString());
     }
   }
     
@@ -59,14 +60,15 @@ public class EchoServer extends AbstractServer
           userId=userId.trim();
           System.out.println(">>>"+userId+" Entered!");  
           client.setInfo("userId",userId);
-          sendToAllClients(userId+" Just logged in! ");
+          sendToAllClients(userId+" Just logged in! \n");
+          client.setInfo("room", "common");
       }
       else if(msg.startsWith("#pm")){
           String target ="";
           String pmMessage="";
           String msgWOCommand = msg.substring(msg.indexOf(" ")+1,msg.length());
           target = msgWOCommand.substring(0, msgWOCommand.indexOf(" ")); // grab the user's id to send the pm
-          pmMessage = msgWOCommand.substring(msgWOCommand.indexOf(" ")+1,msgWOCommand.length());
+          pmMessage = msgWOCommand.substring(msgWOCommand.indexOf(" ")+1,msgWOCommand.length())+"\n";
           sentToAClient(pmMessage,target,client);
       }else if(msg.startsWith("#join")){
           String room = msg.substring(msg.indexOf(" ")+1,msg.length());
@@ -74,32 +76,50 @@ public class EchoServer extends AbstractServer
           room=room.trim();
           System.out.println(">>>"+client.getInfo("userId")+" joined in "+room);  
           client.setInfo("room",room);
-          sendToAllClients(userId+" Just joined room: "+ room);
+          sendToAllClients(userId+" Just joined room: "+ room+"\n");
       }else if(msg.startsWith("#yell")){
-          sentToAllClientsInRoom(msg, client.getInfo("room").toString(), client);
+          String msgString = msg.substring(msg.indexOf(" ")+1,msg.length());
+          this.sendToAllClients(msgString);
       } else if(msg.startsWith("#ison")){
           
           String userId = msg.substring(msg.indexOf(" ")+1,msg.length());
           userId=userId.trim();
-          System.out.println(userId);
-          //onConnection(userId,client);
+          onConnection(userId,client);
+      }else if(msg.startsWith("#intercom")){
+          String msgWOCommand = msg.substring(msg.indexOf(" ")+1,msg.length());
+          String roomName = msgWOCommand.substring(0, msgWOCommand.indexOf(" ")); // grab the user's id to send the pm
+          String msgWORoomm = msgWOCommand.substring(msgWOCommand.indexOf(" ")+1,msgWOCommand.length())+"\n";
+          sentToAllClientsInRoom(msgWORoomm, roomName);
       }
   }
-  /*
+  
   public void onConnection(String userId,ConnectionToClient client){
-     
+      boolean isOn = false;
       Thread[] clientThreadList = getClientConnections();
        
        for(int i=0; i<clientThreadList.length;i++){
           ConnectionToClient user = ((ConnectionToClient)clientThreadList[i]);
-          if(user.getInfo(userId).equals(userId)){
-              String msg = user.getInfo("userId") + "is on in "+user.getInfo("room");
-              sendToAllClients(msg);
-          }
+          if(user.getInfo("userId").equals(userId)){
+              String msg = user.getInfo("userId") + " is on \n";
+              isOn =true;
+              try {
+                  client.sendToClient(msg);
+              } catch (Exception e) {
+              } 
+          } 
+       }
+       if(!isOn){
+          String msg = userId + " is not on \n";
+
+           try {
+                  client.sendToClient(msg);
+              } catch (Exception e) {
+           } 
        }
        
   }
-  */
+  
+  
   public void sentToAClient(Object message, String target, ConnectionToClient client){
     
     Thread[] clientThreadList = getClientConnections();
@@ -110,7 +130,7 @@ public class EchoServer extends AbstractServer
           if(user.getInfo("userId").equals(target)){
             try
             {
-                String msg = client.getInfo("userId")+" has sent you a pm: "+message;
+                String msg = client.getInfo("userId")+" has sent you a pm: "+message+"\n";
                 user.sendToClient(msg);
             }
             catch (Exception ex) {
@@ -122,7 +142,7 @@ public class EchoServer extends AbstractServer
   
   }
   
-   public void sentToAllClientsInRoom(Object message, String room, ConnectionToClient client){
+   public void sentToAllClientsInRoom(Object message, String room){
     
     Thread[] clientThreadList = getClientConnections();
 
@@ -132,8 +152,8 @@ public class EchoServer extends AbstractServer
           if(user.getInfo("room").equals(room)){
             try
             {
-                user.sendToClient("This message can be seen only in "+room);
-                user.sendToClient(message);
+                //user.sendToClient("This message can be seen only in "+room);
+                user.sendToClient(message+"\n");
             }
             catch (Exception ex) {
                 ex.printStackTrace();
@@ -187,6 +207,7 @@ public class EchoServer extends AbstractServer
    
   protected void clientException(ConnectionToClient client,Throwable exception){
       System.out.println("The client "+client.getName()+" has closed connection.");
+      this.sendToAllClients(client.getInfo("userId")+ " has shut down connection \n");
   }
   
   
