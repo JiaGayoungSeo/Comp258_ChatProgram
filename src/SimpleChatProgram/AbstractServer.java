@@ -1,8 +1,7 @@
-package simplechatprogram;
+package SimpleChatProgram;
 
 
 import java.net.*;
-import java.util.*;
 import java.io.*;
 
 /**

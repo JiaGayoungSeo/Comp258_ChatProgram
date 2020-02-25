@@ -1,8 +1,7 @@
-package simplechatprogram;
+package SimpleChatProgram;
 
 
 import java.io.*;
-import simplechatprogram.GUIConsole;
 
 
 /**

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package simplechatprogram;
+package SimpleChatProgram;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -19,7 +19,7 @@ public class LoginUI extends JFrame {
     public JTextField pwText;
     public JButton loginBtn, signUpBtn;
     public MemberUI mem;
-    public JButton ipBtn;
+    //public JButton ipBtn;
     public ChatClient client;
     public GUIConsole guiClientConsole;
 
@@ -91,12 +91,14 @@ public class LoginUI extends JFrame {
         lblNewLabel_2.setBounds(12, 10, 78, 15);
         panel.add(lblNewLabel_2);
 
+        /*
         ipBtn = new JButton("ip address");
         ipBtn.addActionListener((ActionEvent arg0) -> {
             setVisible(false);
         });
         ipBtn.setBounds(93, 6, 97, 23);
         panel.add(ipBtn);
+        */
         setVisible(true);
     }
 
